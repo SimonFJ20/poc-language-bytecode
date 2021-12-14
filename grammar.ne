@@ -11,6 +11,8 @@ const lexer = moo.compile({
     name:       /[a-zA-Z][a-zA-Z0-9]*/,
     lparen:     '(',
     rparen:     ')',
+    lbracket:   '[',
+    rbracket:   ']',
     comma:      ',',
 });
 
@@ -35,10 +37,14 @@ block   ->  (call (__ call):*):?
 call    ->  %name _ %lparen (_ value (%comma _ value):*):? _ %rparen 
     {% ([name,,,args]) => ({type: 'call', name, args: args ? [args[1][0], ...args[2].map(v => v[2][0])] : []}) %}
 
+array   ->  %lbracket (_ value (_ %comma _ value):*):? _ %rbracket
+    {% ([,v]) => ({type: 'array', values: v ? [v[1][0], ...v[2].map(v => v[3][0])] : []}) %}
+
 value   ->  %int
         |   %string
         |   call
         |   %name
+        |   array
 
 __      ->  (%ws|%comment):+
 _       ->  (%ws|%comment):*
