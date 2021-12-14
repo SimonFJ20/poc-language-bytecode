@@ -1,5 +1,6 @@
 const { readFile } = require('fs/promises');
 const nearley = require('nearley');
+const { compileToC } = require('./compile_to_c');
 const grammar = require('./grammar');
 
 const main = async () => {
@@ -8,7 +9,10 @@ const main = async () => {
     const text = (await readFile(filename)).toString();
     const parser = new nearley.Parser(nearley.Grammar.fromCompiled(grammar));
     parser.feed(text);
-    console.log(JSON.stringify(parser.results[0], null, 4));
+    const ast = parser.results[0];
+    // console.log(JSON.stringify(ast, null, 4));
+    const c = compileToC(ast);
+    console.log(c);
 }
 
 main();
