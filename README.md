@@ -1,2 +1,2 @@
 # poc-language-bytecode
-Proof of Concept Language with bytecode
+Language with Bytecode Proof of Concept
