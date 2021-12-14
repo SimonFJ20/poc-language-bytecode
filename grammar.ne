@@ -24,15 +24,15 @@ def     ->  "func" __ %name _ %lparen (_ %name (%comma _ %name):*):? _ %rparen _
     {% ([,,name,,,args,,,,body]) => ({
         type: 'def',
         name,
-        args: args ? [args[1], ...args[2].map(arg => arg[2])] : null,
+        args: args ? [args[1], ...args[2].map(arg => arg[2])] : [],
         body,
     }) %}
 
 block   ->  (call (__ call):*):?
-    {% ([calls]) => calls ? [calls[0], ...calls[1].map(call => call[1])] : null %}
+    {% ([calls]) => calls ? [calls[0], ...calls[1].map(call => call[1])] : [] %}
 
 call    ->  %name _ %lparen (_ value (%comma _ value):*):? _ %rparen 
-    {% ([name,,,args]) => ({type: 'call', name, args: args ? [args[1][0], ...args[2].map(v => v[2][0])] : null}) %}
+    {% ([name,,,args]) => ({type: 'call', name, args: args ? [args[1][0], ...args[2].map(v => v[2][0])] : []}) %}
 
 value   ->  %int
         |   %string
