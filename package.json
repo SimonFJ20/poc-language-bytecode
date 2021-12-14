@@ -1,0 +1,17 @@
+{
+  "name": "poc-language-bytecode",
+  "version": "1.0.0",
+  "description": "Proof of Concept Language with bytecode ",
+  "main": "index.js",
+  "repository": "git@github.com:SimonFJ20/poc-language-bytecode.git",
+  "author": "SimonFJ20 <simonfromjakobsen@gmail.com>",
+  "license": "MIT",
+  "scripts": {
+    "build": "nearleyc -o grammar.js grammar.ne",
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "moo": "^0.5.1",
+    "nearley": "^2.20.1"
+  }
+}
