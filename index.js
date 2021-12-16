@@ -1,6 +1,6 @@
 const { readFile } = require('fs/promises');
 const nearley = require('nearley');
-const { compileToC } = require('./compile_to_c');
+const { compileToC } = require('./compileToC');
 const grammar = require('./grammar');
 
 const main = async () => {
