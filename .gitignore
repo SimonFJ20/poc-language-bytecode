@@ -1,2 +1,4 @@
 node_modules
 grammar.js
+temp.c
+*.out
