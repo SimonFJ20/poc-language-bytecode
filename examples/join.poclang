@@ -1,0 +1,5 @@
+
+func main()
+    print(join(["1st", "2nd", "3rsd"], " -> "))
+    print("\n")
+end

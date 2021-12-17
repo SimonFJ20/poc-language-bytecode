@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <math.h>
+#include <string.h>
 #include "value.h"
 #include "utils.h"
 
@@ -145,12 +146,41 @@ Value* _length(Value* a)
     return none_value();
 }
 
+int string_array_char_amount(Value* a)
+{
+    assert(a->type == ARRAY, "type mismatch");
+    int amount = 0;
+    for (int i = 0; i < a->array_length; i++)
+    {
+        Value* s = a->array_value[i];
+        assert(s->type == STRING, "type mismatch");
+        amount += s->string_length;
+    }
+    return amount;
+}
+
 Value* _join(Value* a, Value* s)
 {
     assert(a->type == ARRAY, "type mismatch");
     assert(s->type == STRING, "type mismatch");
 
-    return none_value();
+    int size = string_array_char_amount(a) + (s->string_length * a->array_length - 1);
+    char* buff = (char*) malloc(sizeof(char) * size);
+    buff[0] = '\0';
+
+    int first = 1;
+
+    for (int i = 0; i < a->array_length; i++) 
+    {
+        if (!first) strcat(buff, s->string_value);
+        first = 0;
+        assert(a->array_value[i]->type == STRING, "type mismatch");
+        strcat(buff, a->array_value[i]->string_value);
+    }
+
+    Value* res = string_value(buff);
+    free(buff);
+    return res;
 }
 
 int evaluateToBoolean(Value* v) {

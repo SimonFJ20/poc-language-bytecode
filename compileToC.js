@@ -58,7 +58,7 @@ const compileToC = (ast) => {
     const before = sourceBefore(files);
     const program = ast.map(def => compile_def(def, ctx)).join('\n\n').replace(/\t/g, '    ');
     const after = sourceAfter(files);
-    return cleanUp(`${before}\n${program}\n${after}\n`);
+    return cleanUp(`${before}\n${program}\n\n${after}\n`);
 }
 
 const standardFuncs = () => [
@@ -75,6 +75,7 @@ const standardFuncs = () => [
     {name: 'string',    argc: 1},
     {name: 'at',        argc: 2},
     {name: 'length',    argc: 1},
+    {name: 'join',      argc: 2},
     {name: 'if',        argc: 3},
     {name: 'print',     argc: 1},
     {name: 'input',     argc: 1},
@@ -93,7 +94,7 @@ const sourceBefore = ({utilsC, valueC, builtinsC, utilsH, valueH}) => {
     return `\n${utilsH}\n${valueH}\n` + [utilsC, valueC, builtinsC].join('\n');
 }
 
-const sourceAfter = ({entryC, utilsH, valueH}) => {
+const sourceAfter = ({entryC}) => {
     return entryC;
 }
 

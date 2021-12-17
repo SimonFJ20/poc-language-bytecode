@@ -2,5 +2,5 @@
 func main()
     print("SORTING CLI 2000\n")
     print("Enter integers to be sorted, seperated by spaces, eg. \"1 3 24 2\"\n")
-    // print(input("> "))
+    print(input("> "))
 end
