@@ -1,43 +1,5 @@
-#include <stdio.h>
-#include <stdlib.h>
 #include <string.h>
-
-void fail(const char* msg)
-{
-    printf("RuntimeError: %s\n", msg);
-    exit(1);
-}
-
-void check(int condition, const char* msg)
-{
-    if (!condition)
-        fail(msg);
-}
-
-typedef enum
-{ NONE = 0, INT, STRING, ARRAY }
-ValueType;
-
-typedef struct ValueStruct Value;
-
-typedef struct ValueStruct
-{
-    ValueType type;
-    union {
-        struct {
-            int int_value;
-        };
-        struct {
-            char* string_value;
-            int string_length;
-        };
-        struct {
-            Value** array_value;
-            int array_length;
-        };
-    };
-}
-Value;
+#include "value.h"
 
 Value* none_value()
 {
@@ -52,6 +14,14 @@ Value* int_value(int value)
     Value* v = (Value*) malloc(sizeof(Value));
     v->type = INT;
     v->int_value = value;
+    return v;
+}
+
+Value* float_value(double value)
+{
+    Value* v = (Value*) malloc(sizeof(Value));
+    v->type = FLOAT;
+    v->float_value = value;
     return v;
 }
 

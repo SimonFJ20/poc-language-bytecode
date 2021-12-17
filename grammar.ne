@@ -5,10 +5,11 @@ const moo = require('moo');
 const lexer = moo.compile({
     ws:         {match: /[\s;]/, lineBreaks: true},
     comment:    /\/\/.*?$/,
+    float:      /(?:0|(?:[1-9][0-9]*))\.[0-9]+/,
     int:        /0|(?:[1-9][0-9]*)/,
-    string:     {match: /"(?:\\["\\]|[^\n"\\])*"/, value: s => s.slice(1, -1)},
+    string:     {match: /"(?:\\["\\n]|[^\n"\\])*"/, value: s => s.slice(1, -1)},
     keywords:   ['let', 'func', 'return', 'end'],
-    name:       /[a-zA-Z][a-zA-Z0-9]*/,
+    name:       /[a-zA-Z][a-zA-Z0-9_]*/,
     lparen:     '(',
     rparen:     ')',
     lbracket:   '[',
@@ -41,6 +42,7 @@ array   ->  %lbracket (_ value (_ %comma _ value):*):? _ %rbracket
     {% ([,v]) => ({type: 'array', values: v ? [v[1][0], ...v[2].map(v => v[3][0])] : []}) %}
 
 value   ->  %int
+        |   %float
         |   %string
         |   call
         |   %name

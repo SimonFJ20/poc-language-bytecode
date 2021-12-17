@@ -1,9 +1,20 @@
 
 
-
-func main()
-    print(at([1, 2, 3], 1))
-    print("   ")
+func then()
+    print("hello world\n")
 end
 
+func printinput(input)
+    print("you typed: ")
+    print(input)
+    print(add(5, 3.5))
+end
+
+func else()
+    printinput(input(">"))
+end
+
+func main()
+    if(0, then, else)
+end
 
