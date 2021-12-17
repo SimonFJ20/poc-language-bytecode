@@ -36,7 +36,10 @@ const compile_call = (node, ctx) => {
 }
 
 const compile_block = (nodes, ctx) => {
-    return nodes.map(call => compile_call(call, ctx) + ';').join('\n\t');
+    const calls = nodes.map(call => compile_call(call, ctx) + ';');
+    if (calls.length > 0) calls[calls.length - 1] = `return ${calls[calls.length - 1]}`;
+    else calls.push('return none_value();');
+    return calls.join('\n\t');
 }
 
 const compile_def = (node, ctx) => {
@@ -44,7 +47,7 @@ const compile_def = (node, ctx) => {
     const name = `_${node.name.value}`;
     const args = node.args.map(arg => `Value* _${arg.value}`).join(', ');
     const body = compile_block(node.body, ctx);
-    return `Value* ${name}(${args})\n{\n\t${body}\n\treturn NULL;\n}`;
+    return `Value* ${name}(${args})\n{\n\t${body}\n}`;
 }
 
 const compileToC = (ast) => {
@@ -59,6 +62,7 @@ const compileToC = (ast) => {
 }
 
 const standardFuncs = () => [
+    {name: 'null',      argc: 0},
     {name: 'false',     argc: 0},
     {name: 'true',      argc: 0},
     {name: 'add',       argc: 2},
@@ -68,6 +72,7 @@ const standardFuncs = () => [
     {name: 'mod',       argc: 2},
     {name: 'pow',       argc: 2},
     {name: 'sqrt',      argc: 1},
+    {name: 'string',    argc: 1},
     {name: 'at',        argc: 2},
     {name: 'length',    argc: 1},
     {name: 'if',        argc: 3},

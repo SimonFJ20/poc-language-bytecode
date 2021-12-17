@@ -3,8 +3,9 @@
 #include "value.h"
 #include "utils.h"
 
+Value* _null() { return none_value(); }
 Value* _false() { return int_value(0); }
-Value* _true() { return int_value(0); }
+Value* _true() { return int_value(1); }
 
 #define BINARY_MATH_OPERATION(name, intint, intfloat, floatint, floatfloat) \
 Value* name(Value* a, Value* b) \
@@ -87,6 +88,34 @@ Value* _sqrt(Value* v) {
     return none_value();
 }
 
+char* int_to_string(int value) {
+    char buff[64];
+    int len = snprintf(buff, 64, "%d", value);
+    char* res = (char*) malloc(sizeof(char) * len);
+    strncpy(res, buff, len);
+    return res;
+}
+
+char* double_to_string(double value) {
+    char buff[64];
+    int len = snprintf(buff, 64, "%g", value);
+    char* res = (char*) malloc(sizeof(char) * len);
+    strncpy(res, buff, len);
+    return res;
+}
+
+Value* _string(Value* v) {
+    switch (v->type) {
+        case INT:
+            return string_value(int_to_string(v->int_value));
+        case FLOAT:
+            return string_value(double_to_string(v->float_value));
+        default:
+            fail("type mismatch");
+    }
+    return none_value();
+}
+
 Value* _at(Value* a, Value* i)
 {
     assert(i->type == INT, "type mismatch");
@@ -113,6 +142,14 @@ Value* _length(Value* a)
         default:
             fail("type mismatch");
     }
+    return none_value();
+}
+
+Value* _join(Value* a, Value* s)
+{
+    assert(a->type == ARRAY, "type mismatch");
+    assert(s->type == STRING, "type mismatch");
+
     return none_value();
 }
 
