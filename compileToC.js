@@ -76,6 +76,7 @@ const standardFuncs = () => [
     {name: 'at',        argc: 2},
     {name: 'length',    argc: 1},
     {name: 'join',      argc: 2},
+    {name: 'split',     argc: 2},
     {name: 'if',        argc: 3},
     {name: 'print',     argc: 1},
     {name: 'input',     argc: 1},

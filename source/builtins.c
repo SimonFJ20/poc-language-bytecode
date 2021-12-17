@@ -184,41 +184,30 @@ Value* _join(Value* a, Value* s)
     return res;
 }
 
-int find_occurrences(int* dest, char* pat, int patlen, char* src, int srclen)
-{
-    dest = (int*) malloc(sizeof(int) * srclen);
-    int matches_si = 0;
-
-    for (int i = 0; i < srclen - patlen; i++)
-        if (strcmp(&src[i], pat))
-            dest[matches_si++] = i;
-
-    return matches_si + 1;
-}
-
-
 Value* _split(Value* source, Value* seperator)
 {
     assert(source->type == STRING, "type mismatch");
     assert(seperator->type == STRING, "type mismatch");
 
-    int* match_locations;
-    int match_amount = find_occurrences(
-        match_locations,
-        seperator->string_value,
-        seperator->array_length,
-        source->string_value,
-        source->string_length
-    );
+    int occurences = 0;
+    for (int i = 0; i < source->string_length; i++)
+        if (strcmp(&source->string_value[i], seperator->string_value))
+            occurences++;
 
-    // char* substrings = (char*) malloc(sizeof(char) * match_amount);
-    // char* buffer = (char*) malloc(sizeof(char) * source->string_length);
-    // for (int i = 0; i < source->string_length; i++)
-    // {
-    //     buffer[i] = source->string_value
-    // }
+    Value** substrings = (Value**) malloc(sizeof(char*) * (occurences + 1));
+    int substrings_si = 0;
 
+    char* token;
+    token = strtok(source->string_value, seperator->string_value);
 
+    while (token != NULL)
+    {
+        substrings[substrings_si++] = string_value(token);
+        token = strtok(NULL, seperator->string_value);
+    }
+    substrings[substrings_si] = NULL;
+
+    return array_value(substrings);
 }
 
 int evaluateToBoolean(Value* v)

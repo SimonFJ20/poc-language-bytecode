@@ -8,7 +8,7 @@ program: generatedo
 generatedo: generatedc
 	gcc -c -o generated.o generated.c $(CFLAGS)
 
-generatedc: examples/sort-cli.poclang grammar.js
+generatedc: examples/split.poclang grammar.js
 	node index.js $< > generated.c
 
 grammar.js: grammar.ne
