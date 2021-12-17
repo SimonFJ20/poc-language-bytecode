@@ -1,0 +1,12 @@
+
+func doubleAndPrint(value)
+    print("double of ")
+    print(value)
+    print(" is ")
+    print(mul(value, 2))
+    print("\n")
+end
+
+func main()
+    map([2, 5, 3], doubleAndPrint)
+end

@@ -210,6 +210,15 @@ Value* _split(Value* source, Value* seperator)
     return array_value(substrings);
 }
 
+Value* _map(Value* source, Value* (*func)())
+{
+    assert(source->type == ARRAY, "type mismatch");
+    Value* result = (Value*) malloc(sizeof(Value) * source->array_length);
+    for (int i = 0; i < source->array_length; i++)
+        result[i] = *func(source->array_value[i]);
+    return result;
+}
+
 int evaluateToBoolean(Value* v)
 {
     switch (v->type) {
