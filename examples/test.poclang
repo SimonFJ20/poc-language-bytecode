@@ -10,6 +10,8 @@ func printinput(input)
     print(add(5, 3.5))
 end
 
+// hello world
+
 func else()
     printinput(input(">"))
 end

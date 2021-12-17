@@ -3,6 +3,9 @@
 	"name": "POC Bytecode Language",
 	"patterns": [
 		{
+			"include": "#comments"
+		},
+		{
 			"include": "#keywords"
 		},
 		{
@@ -10,6 +13,13 @@
 		}
 	],
 	"repository": {
+		"comments": {
+			"patterns": [{
+				"name": "comment.line",
+				"begin": "//",
+				"end": "\\n"
+			}]
+		},
 		"keywords": {
 			"patterns": [{
 				"name": "keyword.control.poclang",
