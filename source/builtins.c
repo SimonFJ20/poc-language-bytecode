@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <math.h>
 #include <string.h>
 #include "value.h"
@@ -90,18 +91,18 @@ Value* _sqrt(Value* v) {
 }
 
 char* int_to_string(int value) {
-    char buff[64];
-    int len = snprintf(buff, 64, "%d", value);
+    char buffer[64];
+    int len = snprintf(buffer, 64, "%d", value);
     char* res = (char*) malloc(sizeof(char) * len);
-    strncpy(res, buff, len);
+    strncpy(res, buffer, len);
     return res;
 }
 
 char* double_to_string(double value) {
-    char buff[64];
-    int len = snprintf(buff, 64, "%g", value);
+    char buffer[64];
+    int len = snprintf(buffer, 64, "%g", value);
     char* res = (char*) malloc(sizeof(char) * len);
-    strncpy(res, buff, len);
+    strncpy(res, buffer, len);
     return res;
 }
 
@@ -165,25 +166,63 @@ Value* _join(Value* a, Value* s)
     assert(s->type == STRING, "type mismatch");
 
     int size = string_array_char_amount(a) + (s->string_length * a->array_length - 1);
-    char* buff = (char*) malloc(sizeof(char) * size);
-    buff[0] = '\0';
+    char* buffer = (char*) malloc(sizeof(char) * size);
+    buffer[0] = '\0';
 
     int first = 1;
 
     for (int i = 0; i < a->array_length; i++) 
     {
-        if (!first) strcat(buff, s->string_value);
+        if (!first) strcat(buffer, s->string_value);
         first = 0;
         assert(a->array_value[i]->type == STRING, "type mismatch");
-        strcat(buff, a->array_value[i]->string_value);
+        strcat(buffer, a->array_value[i]->string_value);
     }
 
-    Value* res = string_value(buff);
-    free(buff);
+    Value* res = string_value(buffer);
+    free(buffer);
     return res;
 }
 
-int evaluateToBoolean(Value* v) {
+int find_occurrences(int* dest, char* pat, int patlen, char* src, int srclen)
+{
+    dest = (int*) malloc(sizeof(int) * srclen);
+    int matches_si = 0;
+
+    for (int i = 0; i < srclen - patlen; i++)
+        if (strcmp(&src[i], pat))
+            dest[matches_si++] = i;
+
+    return matches_si + 1;
+}
+
+
+Value* _split(Value* source, Value* seperator)
+{
+    assert(source->type == STRING, "type mismatch");
+    assert(seperator->type == STRING, "type mismatch");
+
+    int* match_locations;
+    int match_amount = find_occurrences(
+        match_locations,
+        seperator->string_value,
+        seperator->array_length,
+        source->string_value,
+        source->string_length
+    );
+
+    // char* substrings = (char*) malloc(sizeof(char) * match_amount);
+    // char* buffer = (char*) malloc(sizeof(char) * source->string_length);
+    // for (int i = 0; i < source->string_length; i++)
+    // {
+    //     buffer[i] = source->string_value
+    // }
+
+
+}
+
+int evaluateToBoolean(Value* v)
+{
     switch (v->type) {
         case INT:
             return v->int_value != 0;
