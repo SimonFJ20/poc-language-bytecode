@@ -1,0 +1,25 @@
+{
+    "name": "poc-language-syntax",
+    "displayName": "poc-language-syntax",
+    "description": "Syntax for Proof of Concept Bytecode Language",
+    "version": "0.0.1",
+    "engines": {
+        "vscode": "^1.63.0"
+    },
+    "categories": [
+        "Programming Languages"
+    ],
+    "contributes": {
+        "languages": [{
+            "id": "poclang",
+            "aliases": ["POC Bytecode Language", "poclang"],
+            "extensions": [".poclang"],
+            "configuration": "./language-configuration.json"
+        }],
+        "grammars": [{
+            "language": "poclang",
+            "scopeName": "source.poclang",
+            "path": "./syntaxes/poclang.tmLanguage.json"
+        }]
+    }
+}

@@ -1,0 +1,32 @@
+{
+	"$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+	"name": "POC Bytecode Language",
+	"patterns": [
+		{
+			"include": "#keywords"
+		},
+		{
+			"include": "#strings"
+		}
+	],
+	"repository": {
+		"keywords": {
+			"patterns": [{
+				"name": "keyword.control.poclang",
+				"match": "\\b(func|end)\\b"
+			}]
+		},
+		"strings": {
+			"name": "string.quoted.double.poclang",
+			"begin": "\"",
+			"end": "\"",
+			"patterns": [
+				{
+					"name": "constant.character.escape.poclang",
+					"match": "\\\\."
+				}
+			]
+		}
+	},
+	"scopeName": "source.poclang"
+}
