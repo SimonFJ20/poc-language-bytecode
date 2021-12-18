@@ -1,0 +1,8 @@
+
+func sum(p, c, i, a)
+    add(p, c)
+end
+
+func main()
+    print(reduce([2, 5, 3], sum, 0))
+end

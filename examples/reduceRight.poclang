@@ -1,0 +1,10 @@
+
+func divide(p, c, i, a)
+    // print(p); print(" / "); print(c); print(" = "); print(div(p, c)); print("\n")
+    div(p, c)
+end
+
+func main()
+    print(reduceRight([3, 3, 3], divide, 27))
+    print("\n")
+end

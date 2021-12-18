@@ -40,10 +40,10 @@ BINARY_MATH_OPERATION(
 
 BINARY_MATH_OPERATION(
     _sub,
-    int_value(a->int_value + b->int_value),
-    float_value((double) a->int_value + b->float_value),
-    float_value(a->float_value + (double) b->int_value),
-    float_value(a->float_value + b->float_value)
+    int_value(a->int_value - b->int_value),
+    float_value((double) a->int_value - b->float_value),
+    float_value(a->float_value - (double) b->int_value),
+    float_value(a->float_value - b->float_value)
 );
 
 BINARY_MATH_OPERATION(
@@ -210,12 +210,30 @@ Value* _split(Value* source, Value* seperator)
     return array_value(substrings);
 }
 
-Value* _map(Value* source, Value* (*func)())
+Value* _map(Value* source, Value* (*func)(Value*))
 {
     assert(source->type == ARRAY, "type mismatch");
-    Value* result = (Value*) malloc(sizeof(Value) * source->array_length);
+    Value** result = (Value**) malloc(sizeof(Value) * source->array_length);
     for (int i = 0; i < source->array_length; i++)
-        result[i] = *func(source->array_value[i]);
+        result[i] = func(source->array_value[i]);
+    return array_value(result);
+}
+
+Value* _reduce(Value* source, Value* (*func)(Value*, Value*, Value*, Value*), Value* initial)
+{
+    assert(source->type == ARRAY, "type mismatch");
+    Value* result = initial != NULL ? initial : none_value();
+    for (int i = 0; i < source->array_length; i++)
+        result = func(result, source->array_value[i], int_value(i), source);
+    return result;
+}
+
+Value* _reduceRight(Value* source, Value* (*func)(Value*, Value*, Value*, Value*), Value* initial)
+{
+    assert(source->type == ARRAY, "type mismatch");
+    Value* result = initial != NULL ? initial : none_value();
+    for (int i = source->array_length - 1; i >= 0; i--)
+        result = func(result, source->array_value[i], int_value(i), source);
     return result;
 }
 
@@ -239,9 +257,9 @@ int evaluateToBoolean(Value* v)
 Value* _if(Value* condition, Value* (*thenfunc)(), Value* (*elsefunc)())
 {
     if (evaluateToBoolean(condition)) 
-        return (*thenfunc)();
+        return thenfunc();
     else if (elsefunc != NULL)
-        return (*elsefunc)();
+        return elsefunc();
     else
         return none_value();
 }
@@ -251,7 +269,7 @@ Value* _print(Value* v)
 {
     switch (v->type) {
         case NONE:
-            printf("NONE");
+            printf("null");
             break;
         case INT:
             printf("%d", v->int_value);
