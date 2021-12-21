@@ -4,9 +4,15 @@ const compile_name = (node, ctx) => {
     return `_${node.value}`;
 }
 
-const compile_array = (node) => {
-    const values = node.values.map(value => compile_value(value)).join(', ');
+const compile_array = (node, ctx) => {
+    const values = node.values.map(value => compile_value(value, ctx)).join(', ');
     return `array_value((Value* []) {${values}, NULL})`;
+}
+
+const compile_branch = (node, ctx) => {
+    const {condition, truthy, falsy} = node;
+    return `evaluateToBoolean(${compile_value(condition, ctx)}) ?`
+    + ` ${compile_value(truthy, ctx)} : ${compile_value(falsy, ctx)}`;
 }
 
 const compile_value = (node, ctx) => {
@@ -22,7 +28,9 @@ const compile_value = (node, ctx) => {
         case 'name':
             return compile_name(node, ctx);
         case 'array':
-            return compile_array(node);
+            return compile_array(node, ctx);
+        case 'branch':
+            return compile_branch(node, ctx);
     }
 }
 
@@ -31,7 +39,9 @@ const compile_call = (node, ctx) => {
     if (!func) throw new Error(`function '${node.name.value}' not defined`);
     const name = `_${node.name.value}`;
     const args = node.args.map(value => compile_value(value, ctx));
-    while (args.length < func.argc) args.push('NULL')
+    //while (args.length < func.argc) args.push('NULL')
+    if (args.length < func.argc)
+        throw new Error(`not enough args on line ${node.name.line}}`);
     return `${name}(${args.join(', ')})`;
 }
 
@@ -43,22 +53,47 @@ const compile_block = (nodes, ctx) => {
 }
 
 const compile_def = (node, ctx) => {
-    ctx.funcs.push({name: node.name.value, argc: node.args.length});
     const name = `_${node.name.value}`;
     const args = node.args.map(arg => `Value* _${arg.value}`).join(', ');
     const body = compile_block(node.body, ctx);
     return `Value* ${name}(${args})\n{\n\t${body}\n}`;
 }
 
+const funcDefinitionArgs = (argc) => {
+    return ' '
+        .repeat(argc)
+        .split('')
+        .map(() => 'Value*')
+        .join(' ,');
+}
+
+const funcDefinitions = (ctx) => {
+    return ctx.funcs
+        .filter(({userdef}) => userdef)
+        .map(({name, argc}) => `Value* _${name}(${funcDefinitionArgs(argc)});`)
+        .join('\n');
+}
+
 const compileToC = (ast) => {
     const ctx = {
-        funcs: [...standardFuncs()],
+        funcs: [
+            ...standardFuncs(),
+            ...userDefinedFuncs(ast)
+        ],
     };
     const files = readSourceFilesSync();
     const before = sourceBefore(files);
     const program = ast.map(def => compile_def(def, ctx)).join('\n\n').replace(/\t/g, '    ');
     const after = sourceAfter(files);
-    return cleanUp(`${before}\n${program}\n\n${after}\n`);
+    return cleanUp(`${before}\n\n${funcDefinitions(ctx)}\n\n${program}\n\n${after}\n`);
+}
+
+const userDefinedFuncs = (ast) => {
+    return ast.map(def => ({
+        name: def.name.value,
+        argc: def.args.length,
+        userdef: true
+    }));
 }
 
 const standardFuncs = () => [
@@ -80,7 +115,9 @@ const standardFuncs = () => [
     {name: 'map',           argc: 1},
     {name: 'reduce',        argc: 3},
     {name: 'reduceRight',   argc: 3},
+    {name: 'repeat',        argc: 2},
     {name: 'if',            argc: 3},
+    {name: 'return',        argc: 1},
     {name: 'print',         argc: 1},
     {name: 'input',         argc: 1},
 ]

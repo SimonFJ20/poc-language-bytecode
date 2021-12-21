@@ -1,0 +1,26 @@
+
+func testTree()
+    return([1, [2, [3, null(), null()], [4, null(), null()]], [5, null(), null()]])
+end
+
+func printWhiteSpace(depth)
+    print(join(repeat(" ", depth), ""))
+end
+
+func println(v)
+    print(v)
+    print("\n")
+end 
+
+func printNode(node, depth)
+    return(at(node, 2) ? printNode(at(node, 2), add(depth, 1)) : null())
+    printWhiteSpace(depth)
+    println(at(node, 0))
+    return(at(node, 1) ? printNode(at(node, 1), add(depth, 1)) : null())
+end
+
+
+func main()
+    printNode(testTree(), 0)
+end
+

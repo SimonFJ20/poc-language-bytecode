@@ -8,13 +8,15 @@ const lexer = moo.compile({
     float:      /\-?(?:(?:0|(?:[1-9][0-9]*))\.[0-9]+)/,
     int:        /\-?(?:0|(?:[1-9][0-9]*))/,
     string:     {match: /"(?:\\["\\n]|[^\n"\\])*"/, value: s => s.slice(1, -1)},
-    keywords:   ['let', 'func', 'return', 'end'],
+    keywords:   ['func', 'end'],
     name:       /[a-zA-Z][a-zA-Z0-9_]*/,
     lparen:     '(',
     rparen:     ')',
     lbracket:   '[',
     rbracket:   ']',
     comma:      ',',
+    qmark:      '?',
+    colon:      ':',
 });
 
 %}
@@ -41,12 +43,16 @@ call    ->  %name _ %lparen (_ value (%comma _ value):*):? _ %rparen
 array   ->  %lbracket (_ value (_ %comma _ value):*):? _ %rbracket
     {% ([,v]) => ({type: 'array', values: v ? [v[1][0], ...v[2].map(v => v[3][0])] : []}) %}
 
+branch  ->  value __ %qmark __ value __ %colon __ value
+    {% (v) => ({type: 'branch', condition: v[0][0], truthy: v[4][0], falsy: v[8][0]}) %}
+
 value   ->  %int
         |   %float
         |   %string
         |   call
         |   %name
         |   array
+        |   branch
 
 __      ->  (%ws|%comment):+
 _       ->  (%ws|%comment):*

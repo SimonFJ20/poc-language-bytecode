@@ -237,6 +237,18 @@ Value* _reduceRight(Value* source, Value* (*func)(Value*, Value*, Value*, Value*
     return result;
 }
 
+Value* _repeat(Value* v, Value* amount)
+{
+    assert(amount->type == INT, "type mismatch");
+    Value** values = (Value**) malloc(sizeof(Value*) * (amount->int_value + 1));
+    for (int i = 0; i < amount->int_value; i++)
+        values[i] = v;
+    values[amount->int_value] = NULL;
+    Value* res = array_value(values);
+    // free(values);
+    return res;
+}
+
 int evaluateToBoolean(Value* v)
 {
     switch (v->type) {
@@ -264,6 +276,10 @@ Value* _if(Value* condition, Value* (*thenfunc)(), Value* (*elsefunc)())
         return none_value();
 }
 
+Value* _return(Value* v)
+{
+    return v;
+}
 
 Value* _print(Value* v)
 {
