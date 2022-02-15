@@ -90,7 +90,7 @@ void caller()
         .execute = MyParseable_execute,
         .a = int_value(5),
     };
-    my_user(my_parseable);
+    my_user((Parseable*) my_parseable);
 }
 ```
 
