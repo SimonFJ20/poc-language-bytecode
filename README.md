@@ -1,10 +1,10 @@
 # simple-language-compiling-to-c
 
-A simple proof of concept of compiling a very samll language into C code.
+A simple proof of concept of compiling a very small language into C code.
 
 ## Why compile to C
 
-By compiling to C, we can then use GCC or Clang to compile it, and heavily optimise it. 
+By compiling to C, we can then use GCC or Clang to compile it, which heavily optimises it.
 
 ### Pros
 
@@ -19,28 +19,27 @@ By compiling to C, we can then use GCC or Clang to compile it, and heavily optim
 
 ## The language
 
-The language is designed to be aa simple as possible.
-It contains functions, integers, strings, arrays and thats basically it.
+The language is designed to be as simple as possible.
+It contains functions, integers, strings, arrays and that's basically it.
 It being to simple, sped up development time by alot, but also greatly limited the usability.
 
 You can see some examples of the language in the `examples` folder.
 
 ### Syntax highlighting
 
-I have made a VS Code plugin for syntax highlighting (mostly just keyword highlighting). Just copy the `poc-language-syntax` folder into the VS Code extension folder. On linux that would be `/home/simon/.vscode/extensions`, idk on Wondows or MacOS.
+I have made a VS Code plugin for syntax highlighting (mostly just keyword highlighting). Just copy the `poc-language-syntax` folder into the VS Code extension folder. On Linux and Windows it is `/home/simon/.vscode/extensions` and `C:\Users\simon\.vscode\extensions` respectively, idk on MacOS, but it is likely similar to Linux.
 
 ### Purity
 
 The language is designed to be so simple, that all solutions are pure without sideeffects.
-This is done quite simply by not haveing any features providing state.
+This is accomplished simply by not having any features providing state.
 There are only immutable function parameters and return values.
-
 
 ### Inline functions
 
 Because the implementation used direct function pointers (snippet 1), instead of struct/function pairs (snippet 2), inline functions are not supported.
-Although more verbose, the later allows for things like inline functions like (snippet 3).
-This probably doesn't make sense, but this is important to know, if you're makinng high-level language compiling to low-level. Amd with a bit of polymorphism, this can become very powerful.
+Although more verbose, the latter allows for things like inline functions like (snippet 3).
+This probably doesn't make sense, but this is important to know, if you're making high-level language compiling to low-level. And with a bit of polymorphism, this can become very powerful.
 
 ```c
 // snippet 1, C
@@ -105,8 +104,7 @@ func caller(a)
 end
 ```
 
-
-## Instruktions
+## Instructions
 
 Have Yarn and GCC installed.
 
