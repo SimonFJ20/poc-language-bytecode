@@ -64,11 +64,11 @@ void caller()
 
 ```c
 // snippet 2, C
-struct Parseable {
+struct Parseable { // "interface" but C-style inherited instead of polymorphism
     Value* (*execute)();
 };
 
-struct MyParseable {
+struct MyParseable { // "implements Parsable"
     Value* (*execute)();
     Value* a;
 };
@@ -81,16 +81,16 @@ Value* MyParseable_execute(struct MyParseable* self, Value* b)
 int my_user(struct Parseable* parseable)
 {
     int b = int_value(4);
-    return parseable(b);
+    return parseable->execute(b);
 }
 
 void caller()
 {
     struct MyParseable* my_parseable = {
-        .execute = MyParseable_execute,
+        .execute = MyParseable_execute, // taking the function pointer
         .a = int_value(5),
     };
-    my_user((Parseable*) my_parseable);
+    my_user((Parseable*) my_parseable); // casted to make C act like it supports inheritance
 }
 ```
 
